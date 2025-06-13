@@ -1,5 +1,8 @@
 #requires -PSEdition Core
 
+$targetBranch = "release-jackson"
+
+
 # Get all folders containing a .git subfolder (indicating a Git repo)
 Get-ChildItem -Path . -Directory -Recurse | Where-Object {
     Test-Path "$($_.FullName)/.git"
@@ -16,7 +19,7 @@ Get-ChildItem -Path . -Directory -Recurse | Where-Object {
         git pull
 
         Write-Host "Switching to 'release-jackson' branch..." -ForegroundColor Yellow
-        git checkout release-jackson
+        git checkout $targetBranch
         git pull
 
         Write-Host "Rebasing 'release-jackson' onto 'main'..." -ForegroundColor Yellow

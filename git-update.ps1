@@ -1,6 +1,7 @@
 #requires -PSEdition Core
 
 $targetBranch = "release-jackson"
+$allowList = "devops-academy-one"
 
 
 # Get all folders containing a .git subfolder (indicating a Git repo)
@@ -9,29 +10,32 @@ Get-ChildItem -Path . -Directory -Recurse | Where-Object {
 } | ForEach-Object {
     $repoPath = $_.FullName
     $repoName = $_.Name
-    Write-Host "`n--- Processing repository: $repoName ---" -ForegroundColor Cyan
 
-    try {
-        Push-Location $repoPath
+    if ($allowList -contains $repoName){
+        Write-Host "`n--- Processing repository: $repoName ---" -ForegroundColor Cyan
 
-        Write-Host "Switching to 'main' branch..." -ForegroundColor Yellow
-        git checkout main
-        git pull
+        try {
+            Push-Location $repoPath
 
-        Write-Host "Switching to 'release-jackson' branch..." -ForegroundColor Yellow
-        git checkout $targetBranch
-        git pull
+            Write-Host "Switching to 'main' branch..." -ForegroundColor Yellow
+            git checkout main
+            git pull
 
-        Write-Host "Rebasing 'release-jackson' onto 'main'..." -ForegroundColor Yellow
-        git rebase main
+            Write-Host "Switching to 'release-jackson' branch..." -ForegroundColor Yellow
+            git checkout $targetBranch
+            git pull
 
-        Write-Host "Force pushing changes to 'release-jackson'..." -ForegroundColor Yellow
-        git push -f
-    }
-    catch {
-        Write-Error "Error processing $repoName : $($_.Exception.Message)"
-    }
-    finally {
-        Pop-Location
-    }
+            Write-Host "Rebasing 'release-jackson' onto 'main'..." -ForegroundColor Yellow
+            git rebase main
+
+            Write-Host "Force pushing changes to 'release-jackson'..." -ForegroundColor Yellow
+            git push -f
+        }
+        catch {
+            Write-Error "Error processing $repoName : $($_.Exception.Message)"
+        }
+        finally {
+            Pop-Location
+        }
+}
 }

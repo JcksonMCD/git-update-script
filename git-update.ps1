@@ -1,7 +1,7 @@
 #requires -PSEdition Core
 
 $targetBranch = "release-jackson"
-$allowList = "devops-academy-one"
+$allowList = "devops-academy-one" , "devops-academy-two"
 
 
 # Get all folders containing a .git subfolder (indicating a Git repo)
@@ -21,14 +21,14 @@ Get-ChildItem -Path . -Directory -Recurse | Where-Object {
             git checkout main
             git pull
 
-            Write-Host "Switching to 'release-jackson' branch..." -ForegroundColor Yellow
+            Write-Host "Switching to '$targetBranch' branch..." -ForegroundColor Yellow
             git checkout $targetBranch
             git pull
 
-            Write-Host "Rebasing 'release-jackson' onto 'main'..." -ForegroundColor Yellow
+            Write-Host "Rebasing '$targetBranch' onto 'main'..." -ForegroundColor Yellow
             git rebase main
 
-            Write-Host "Force pushing changes to 'release-jackson'..." -ForegroundColor Yellow
+            Write-Host "Force pushing changes to '$targetBranch'..." -ForegroundColor Yellow
             git push -f
         }
         catch {

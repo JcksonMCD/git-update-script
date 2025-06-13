@@ -26,12 +26,12 @@ Get-ChildItem -Path . -Directory -Recurse | Where-Object {
             git pull
 
             Write-Host "Rebasing '$targetBranch' onto 'main'..." -ForegroundColor Yellow
-            git rebase mai
+            git rebase main 2>&1
 
             if ($LASTEXITCODE -eq 0){
                 Write-Host "Force pushing changes to '$targetBranch'..." -ForegroundColor Yellow
                 git push -f
-            }
+            } 
         }
         catch {
             Write-Error "Error processing $repoName : $($_.Exception.Message)"

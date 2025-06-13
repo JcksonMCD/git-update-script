@@ -1,5 +1,7 @@
 #requires -PSEdition Core
 
+$PSNativeCommandUseErrorActionPreference = $true
+
 $targetBranch = "release-jackson"
 $allowList = "devops-academy-one" , "devops-academy-two"
 
@@ -28,8 +30,10 @@ Get-ChildItem -Path . -Directory -Recurse | Where-Object {
             Write-Host "Rebasing '$targetBranch' onto 'main'..." -ForegroundColor Yellow
             git rebase main
 
-            Write-Host "Force pushing changes to '$targetBranch'..." -ForegroundColor Yellow
-            git push -f
+            if ($LASTEXITCODE -eq 0){
+                Write-Host "Force pushing changes to '$targetBranch'..." -ForegroundColor Yellow
+                git push -f
+            }
         }
         catch {
             Write-Error "Error processing $repoName : $($_.Exception.Message)"
